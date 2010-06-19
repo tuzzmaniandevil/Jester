@@ -1,6 +1,13 @@
-////////////
-// Jester //
-////////////
+///////////////////////////////////////////////////////
+// Jester - Simple Gesture Recognition in JavaScript //
+///////////////////////////////////////////////////////
+
+<example>
+var element = document.getElementById("target");
+jester(target).tap(function() {
+    alert("You hit the target!");
+});
+</example>
 
 For the latest news and most up-to-date information, check the Jester GitHub Wiki! http://wiki.github.com/plainview/Jester/
 
@@ -30,11 +37,8 @@ Examples of code can be seen at the bottom of this README in the "How to Use" se
 1.1 Project Aims
 ----------------
 - Super easy gesture recognition on DOM Elements.
-- Elegant syntax.  I like jQuery's style so will go with a bastardisation of that for now.
+- Elegant syntax.
 - Library agnostic : must not rely on jQuery, Moo, Dojo etc.  Pure JavaScript only.
-- Open code base : The objects and interfaces used internally by Jester should be reasonably accessible without editing the core code.
-- No selector engine : how you fetch DOM elements is none of Jester's business.
-- No other bumf : this is all about gesture recognition and nothing else.
 
 A basic example can be viewed in the index.html page.  Boot it up on an iPhone, iPad or Simulator and swipe, flick, tap and doubletap on the black square.
 
@@ -52,13 +56,17 @@ This is very much a learning project.  Mistakes will be made and enjoyed whole-h
 --------------
 Jester makes recognising gestures on DOM elements really easy.  First you need to know how to get a DOM element, though.  To get an element by its ID, use:
 
+<example>
 // will assign the element with an ID of "wrapper" to the variable el
 var el = document.getElementById("wrapper");
+</example>
 
 If you're using jQuery or another library which wraps elements in a custom object/interface, you need to get to the DOM element directly.  In jQuery:
 
+<example>
 // will assign the element with an ID of "wrapper" to the variable el
 var el = $("#wrapper").get(0);
+</example>
 
 More examples with other libraries coming soon.
 
@@ -74,12 +82,15 @@ jester(element)
 
 2.2 Handlers
 ------------
+<example>
 var handler = function(touchGroup, direction) {
   // handler code
 }
+</example>
 
-Handlers are passed a TouchGroup object which contains information about the gesture including touch position(s), changes in position, speed and acceleration.  For swipe and flick events, a direction is also passed as a string (i.e. "left" or "right").
+Handlers are passed a TouchGroup object which contains information about the gesture including touch position(s), changes in position and speed.  For swipe and flick events, a direction is also passed as a string (i.e. "left" or "right").
 
+<example>
 // Log the direction in which a gesture occured
 var whichDirection = function(touches, direction) {
     console.log("Swiped to the " + direction);
@@ -95,7 +106,7 @@ var howFar = function(touches, direction) {
 jester(document.getElementById("wrapper"))
   .flick(whichDirection)
   .swipe(howFar);
-
+</example>
 
 2.3 Options
 -----------
@@ -107,7 +118,7 @@ jester(document.getElementById("wrapper"), { swipeDistance: 400, flickTime: 200 
 
 Currently supported Options are:
 
-bubble         Boolean   Whether or not to bubble touch events performed on the element.
+capture        Boolean   Whether or not to receive events on the capture phase.
 
 tapDistance    Integer   Maximum distance a finger is allowed to travel for a tap to be registered.
 tapTime        Integer   Maximum time a finger is allowed to have contact with the screen for a tap to be registered.
