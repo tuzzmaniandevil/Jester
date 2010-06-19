@@ -1,47 +1,67 @@
 <!DOCTYPE html>
 <html>
 
-  <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+        <meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=no">
 
-    <title></title>
+        <title>Jester</title>
 
-    <style type="text/css">
-      #wrapper { position: relative; width: 400px; height: 400px; background: #000; }
-    </style>
-
-    <script type="text/javascript" src="jester.js">
-    </script>
-
-    <script type="text/javascript">
-      document.addEventListener("DOMContentLoaded", function() {
-        jester(document.getElementById("wrapper"))
-          .flick(function() { console.log("flick"); })
-          .swipe(function() { console.log("swipe"); })
-          .tap(function() { console.log("tap"); })
-          .doubletap(function() { console.log("doubletap"); })
-          .pinch({
-            narrow: function() {
-              console.log("pinch narrowed");
-            },
-            widen: function() {
-              console.log("pinch widened");
-            },
-            end: function(touches, direction) {
-              console.log("Pinch end: " + direction);
+        <style type="text/css">
+            #wrapper {
+                position: relative;
+                width: 100px;
+                height: 100px;
+                background: #000;
+                color: #fff;
+                font-family: Georgia;
+                font-weight: bold;
+                text-align: center;
+                text-transform: uppercase;
+                padding: 10px;
+                -webkit-border-radius: 60px;
+                -webkit-transition-property: -webkit-transform, background-color, color;
+                -webkit-transition-duration: 0.5s;
             }
-          });
-      }, false);
-    </script>
+        </style>
 
-  </head>
+        <script type="text/javascript" src="jester.js"></script>
+        <script type="text/javascript">
+            document.addEventListener("DOMContentLoaded", function()
+            {
+                var element = document.getElementById("wrapper");
+                var swipeHandler = function(touches, direction) {
+                    var matrix = new WebKitCSSMatrix(this.style.webkitTransform);
+                    if(direction === "right")
+                        matrix.e += 50;
+                    else if(direction === "left")
+                        matrix.e -= 50;
 
-  <body>
+                    if(matrix.e < -100 || matrix.e > 250)
+                        matrix.e = 0;
 
-    <div id="wrapper">
+                    this.style.webkitTransform = "translate3d(" + matrix.e + "px, " + matrix.f + "px, 0)";
+                }
+                var changeColor = function(touches) {
+                    this.style.backgroundColor = "#" + (Math.round(0xffffff * Math.random()).toString(16));
+                }
+                var alertDoubleTapped = function() {
+                    alert("Double tap detected!");
+                }
+                jester(element, { swipeDistance: 10 })
+                    .swipe(swipeHandler)
+                    .tap(changeColor)
+                    .doubletap(alertDoubleTapped);
+            }, false);
+        </script>
 
-    </div>
+    </head>
 
-  </body>
+    <body>
+
+        <div id="wrapper">
+        </div>
+
+    </body>
 
 </html>
