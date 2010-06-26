@@ -4,7 +4,7 @@
 
 <example>
 var element = document.getElementById("target");
-jester(target).tap(function() {
+jester(element).tap(function() {
     alert("You hit the target!");
 });
 </example>
