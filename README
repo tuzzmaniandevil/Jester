@@ -29,7 +29,7 @@ A small JavaScript library for easily recognising gestures on DOM elements on th
 
 1.0 Project Status
 ------------------
-Jester works for Swipes, Flicks, Taps and Double Taps.  Pinches should be added by the end of the week.
+Jester works for Swipes, Flicks, Taps, Double Taps and Pinches.
 
 Examples of code can be seen at the bottom of this README in the "How to Use" section.
 
