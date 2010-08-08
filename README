@@ -19,6 +19,8 @@ For the latest news and most up-to-date information, check the Jester GitHub Wik
 2.1 - Basic Syntax
 2.2 - Handlers
 2.3 - Options
+2.4 - TouchGroup Object
+2.5 - Touch Object
 3.0 - Bugs? Questions?
 
 
@@ -49,7 +51,8 @@ This is very much a learning project.  Mistakes will be made and enjoyed whole-h
 -----------------
 - Clear and thorough documentation.
 - Project website.
-
+- Provide "during" methods for all the events (except pinch, which is already available)
+- Provide the user a way to write their own touch events
 
 2.0 How to Use
 --------------
@@ -129,6 +132,73 @@ swipeDistance  Integer   The minimum distance a gesture must travel before a swi
 flickTime      Integer   The maximum length of time a gesture can last for it to be registered as a flick.
 flickDistance  Integer   The minimum distance a gesture must travel for it to be registered as a flick.
 
+2.4 TouchGroup Object
+---------------------
+
+Every touch handler is passed a TouchGroup object as well as any extra data such as direction info.
+
+The TouchGroup object contains all the computed information about a collection of touches such as
+change in scale and rotation.  It also provides access to all of the individual touches and their
+data.
+
+Methods of the TouchGroup object:
+
+TouchGroup.numTouches()     : Return the number of touches in the group
+
+TouchGroup.touch(n)         : Get Touch object number n
+
+TouchGroup.current.
+            scale()         : The current scale factor
+            midX()          : The mid x point between the touches (if there is only one touch, the mid point is the touch's position)
+            midY()          : The mid y point between the touches (if there is only one touch, the mid point is the touch's position)
+
+TouchGroup.delta.
+            scale()         : The change in the scale factor since the previous move
+
+2.5 Touch Object
+----------------
+
+Working with a TouchGroup invariably leads to working with the individual Touch objects as well.  As described
+above, these are accessed by calling the touch method on a TouchGroup and passing in a number representing which
+Touch you want to access.
+
+The Touch object contains all the computed information about a single touch, such as change in position,
+duration and speed.
+
+Methods of the Touch object:
+
+Touch.start.
+            x()         : the starting x position (pageX)
+            y()         : the starting y position (pageY)
+            time()      : the time the touch started
+            speedX()    : the initial x speed (always presumed to be 0)
+            speedY()    : the initial y speed (always presumed to be 0)
+
+Touch.current.
+            x()         : the currrent pageX position
+            y()         : the current pageY position
+            time()      : the current time
+            speedX()    : the current x speed
+            speedY()    : the current y speed
+
+Touch.prev.
+            x()         : the previous pageX position
+            y()         : the previous pageY position
+            time()      : the previous recorded time
+            speedX()    : the previous x speed
+            speedY()    : the previous y speed
+
+Touch.delta.
+            x()         : the change in x position since the last move
+            y()         : the change in y position since the last move
+            time()      : the change in time since the last move
+            speedX()    : the change in x speed since the last move
+            speedY()    : the change in y speed since the last move
+
+Touch.total.
+            x()         : the total x distance travelled
+            y()         : the total y distance travelled
+            time()      : the total time of this touch
 
 3.0 Bugs? Questions?
 --------------------
