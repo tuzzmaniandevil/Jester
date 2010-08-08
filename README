@@ -55,7 +55,7 @@ This is very much a learning project.  Mistakes will be made and enjoyed whole-h
 - Clear and thorough documentation.
 - Project website.
 - Provide "during" methods for all the events (except pinch, which is already available)
-- Provide the user a way to write their own touch events
+- Provide the user a way to write their own custom gesture events
 
 2.0 How to Use
 --------------
