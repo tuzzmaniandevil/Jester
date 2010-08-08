@@ -40,7 +40,7 @@ Examples of code can be seen at the bottom of this README in the "How to Use" se
 ----------------
 - Super easy gesture recognition on DOM Elements.
 - Elegant syntax.
-- Library agnostic : must not rely on jQuery, Moo, Dojo etc.  Pure JavaScript only.
+- Library agnostic : must not rely on jQuery, Moo, Dojo etc.
 
 A basic example can be viewed in the index.html page.  Boot it up on an iPhone, iPad or Simulator and swipe, flick, tap and doubletap on the black square.
 
