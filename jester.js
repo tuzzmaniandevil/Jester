@@ -1,72 +1,72 @@
-(function(container)
-{
+/* 
+ * Jester JavaScript Library v0.2
+ * http://github.com/plainview/Jester
+ *
+ * Easy JavaScript gesture recognition.
+ * 
+ * Copyright (c) 2010 Scott Seaward
+ * Released under MIT License
+ */
+(function(container, undefined) {
     container["Jester"] = {
         cache : {},
         cacheId : "Jester" + (new Date()).getTime(),
         guid : 0,
 
         // The Jester constructor
-        Watcher : function(element, options)
-        {
+        Watcher : function(element, options) {
 
             var that = this,
                 cacheId = Jester.cacheId,
                 cache = Jester.cache,
                 gestures = "swipe flick tap doubletap pinchnarrow pinchwiden pinchend";
 
-            if(!element || !element.nodeType)
-            {
+            if(!element || !element.nodeType) {
                 throw new TypeError("Jester: no element given.");
             }
 
-            if(typeof element[cacheId] !== "number")
-            {
+            // if this element hasn't had Jester called on it before,
+            // set it up with a cache entry and give it the expando
+            if(typeof element[cacheId] !== "number") {
                 element[cacheId] = Jester.guid;
                 Jester.guid++;
             }
 
             var elementId = element[cacheId];
 
-            if(!cache[element[cacheId]])
-            {
-                cache[element[cacheId]] = {};
+            if(!(elementId in cache)) {
+                Jester.cache[elementId] = {};
             }
 
             var elementCache = Jester.cache[elementId];
 
-            if(!elementCache["options"])
-            {
+            if(!("options" in elementCache)) {
                 elementCache["options"] = {};
             }
 
             options = options || elementCache.options || {};
 
-            // cache the option values for reuse
-            if(elementCache.options !== options)
-            {
-                for(prop in options)
-                {
-                    if(elementCache.options[prop])
-                    {
-                        if(elementCache.options[prop] !== options[prop])
-                        {
+            // cache the option values for reuse or, if options already
+            // exist for this element, replace those that have been
+            // specified
+            if(elementCache.options !== options) {
+                for(prop in options) {
+                    if(elementCache.options[prop]) {
+                        if(elementCache.options[prop] !== options[prop]) {
                             elementCache.options[prop] = options[prop];
                         }
                     }
-                    else
-                    {
+                    else {
                         elementCache.options[prop] = options[prop];
                     }
                 }
             }
 
-            if(!elementCache["eventSet"])
-            {
+            if(!elementCache["eventSet"]) {
                 elementCache["eventSet"] = new Jester.EventSet(element);
             }
 
-            if(!elementCache["touchMonitor"])
-            {
+            if(!elementCache["touchMonitor"]) {
                 elementCache["touchMonitor"] = new Jester.TouchMonitor(element);
             }
 
@@ -75,61 +75,48 @@
 
             this.id = element[cacheId];
 
-            this.bind = function(evt, fn)
-            {
-                if(evt && typeof evt === "string" && fn && fn.constructor === Function)
-                {
+            this.bind = function(evt, fn) {
+                if(evt && typeof evt === "string" && fn && fn.constructor === Function) {
                     events.register(evt, fn);
                 }
                 return this;
             };
 
             // create shortcut bind methods for all gestures
-            gestures.split(" ").forEach(function(value)
-            {
-                this[value] = function(fn)
-                {
+            gestures.split(" ").forEach(function(value) {
+                this[value] = function(fn) {
                     this.bind(value, fn);
                     return this;
                 };
             }, that);
 
             // wrapper to cover all three pinch methods
-            this.pinch = function(fns)
-            {
-                if(typeof fns !== "undefined")
-                {
+            this.pinch = function(fns) {
+                if(typeof fns !== "undefined") {
                     // if its just a function it gets assigned to pinchend
-                    if(fns.constructor && fns.constructor === Function)
-                    {
+                    if(fns.constructor && fns.constructor === Function) {
                         that.pinchend(fns);
                     }
-                    else if(typeof fns === "object")
-                    {
+                    else if(typeof fns === "object") {
                         var method;
-                        "narrow widen end".split(" ").forEach(function(eventExt)
-                        {
+                        "narrow widen end".split(" ").forEach(function(eventExt) {
                             method = "pinch" + eventExt;
-                            if(fns[eventExt] && fns[eventExt].constructor && fns[eventExt].constructor === Function)
-                            {
+                            if(fns[eventExt] && fns[eventExt].constructor && fns[eventExt].constructor === Function) {
                                 that[method](fns[eventExt]);
                             }
                         });
                     }
                 }
-            }
+            };
 
-            this.halt = function()
-            {
+            this.halt = function() {
                 touches.stopListening();
                 events.clear();
                 delete elementCache["eventSet"];
                 delete elementCache["touchMonitor"];
             };
-
         },
-        EventSet : function(element)
-        {
+        EventSet : function(element) {
             var cacheId = Jester.cacheId,
                 elementId = element[cacheId],
                 cache = Jester.cache,
@@ -140,26 +127,21 @@
             this.eventsTable = eventsTable;
 
             // register a handler with an event
-            this.register = function(eventName, fn)
-            {
+            this.register = function(eventName, fn) {
                 // if the event exists and has handlers attached to it, add this one to the array of them
-                if(eventsTable[eventName] && eventsTable[eventName].push)
-                {
+                if(eventsTable[eventName] && eventsTable[eventName].push) {
                     // make sure multiple copies of the same handler aren't inserted
-                    if(!~eventsTable[eventName].indexOf(fn))
-                    {
+                    if(!~eventsTable[eventName].indexOf(fn)) {
                         eventsTable[eventName].push(fn);
                     }
                 }
-                else
-                {
+                else {
                     // create a new array bound to the event containing only the handler passed in
                     eventsTable[eventName] = [fn];
                 }
             };
 
-            this.release = function(eventName, fn)
-            {
+            this.release = function(eventName, fn) {
                 if(typeof eventName === "undefined") return;
 
                 // if a handler hasn't been specified, remove all handlers
@@ -168,8 +150,7 @@
                         delete eventsTable.eventName[handlers];
                     }
                 }
-                else
-                {
+                else {
                     // pull the given handler from the given event
                     if(eventsTable[eventName] && ~eventsTable[eventName].indexOf(fn))
                     {
@@ -178,60 +159,49 @@
                 }
 
                 // if the event has no more handlers registered to it, get rid of the event completely
-                if(eventsTable[eventName] && eventsTable[eventName].length == 0)
-                {
+                if(eventsTable[eventName] && eventsTable[eventName].length == 0) {
                     delete eventsTable[eventName];
                 }
             };
 
             // completely remove all events and their handlers
-            this.clear = function()
-            {
+            this.clear = function() {
                 var events;
-                for(events in eventsTable)
-                {
+                for(events in eventsTable) {
                     delete eventsTable[events];
                 }
             };
 
             // get all the handlers associated with an event
             // return an empty array if nothing is registered with the given event name
-            this.getHandlers = function(eventName)
-            {
-                if(eventsTable[eventName] && eventsTable[eventName].length)
-                {
+            this.getHandlers = function(eventName) {
+                if(eventsTable[eventName] && eventsTable[eventName].length) {
                     return eventsTable[eventName];
                 }
-                else
-                {
+                else {
                     return [];
                 }
             };
 
             // inject an array of handlers into the event table for the given event
             // this will klobber all current handlers associated with the event
-            this.setHandlers = function(eventName, handlers)
-            {
+            this.setHandlers = function(eventName, handlers) {
                 eventsTable[eventName] = handlers;
             };
 
             // execute all handlers associated with an event, passing each handler the arguments provided after the event's name.
-            this.execute = function(eventName)
-            {
+            this.execute = function(eventName) {
                 if(typeof eventName === "undefined") return;
 
                 // if the event asked for exists in the events table
-                if(eventsTable[eventName] && eventsTable[eventName].length)
-                {
+                if(eventsTable[eventName] && eventsTable[eventName].length) {
                     // get the arguments sent to the function
                     var args = Array.prototype.slice.call(arguments, 1);
 
                     // iterate throuh all the handlers
-                    for(i = 0; i < eventsTable[eventName].length; i++)
-                    {
+                    for(i = 0; i < eventsTable[eventName].length; i++) {
                         // check current handler is a function
-                        if(eventsTable[eventName][i].constructor == Function)
-                        {
+                        if(eventsTable[eventName][i].constructor == Function) {
                             // execute handler with the provided arguments
                             eventsTable[eventName][i].apply(element, args);
                         }
@@ -272,41 +242,34 @@
             var touches;
             var previousTapTime = 0;
 
-            var touchStart = function(evt)
-            {
+            var touchStart = function(evt) {
                 if(opts.preventDefault) evt.preventDefault();
 
                 touches = new Jester.TouchGroup(evt);
             };
 
-            var touchMove = function(evt)
-            {
+            var touchMove = function(evt) {
                 if(opts.preventDefault) evt.preventDefault();
 
                 touches.update(evt);
 
-                if(touches.numTouches() == 2)
-                {
+                if(touches.numTouches() == 2) {
                     // pinchnarrow
-                    if(touches.delta.scale() < 0.0)
-                    {
+                    if(touches.delta.scale() < 0.0) {
                         eventSet.execute("pinchnarrow", touches);
                     }
 
                     // pinchwiden
-                    else if(touches.delta.scale() > 0.0)
-                    {
+                    else if(touches.delta.scale() > 0.0) {
                         eventSet.execute("pinchwiden", touches);
                     }
                 }
             };
 
-            var touchEnd = function(evt)
-            {
+            var touchEnd = function(evt) {
                 if(opts.preventDefault) evt.preventDefault();
 
-                if(touches.numTouches() == 1)
-                {
+                if(touches.numTouches() == 1) {
                     // tap
                     if(touches.touch(0).total.x() <= opts.tapDistance && touches.touch(0).total.y() <= opts.tapDistance && touches.touch(0).total.time() < opts.tapTime) {
                         setTimeout(function() {
@@ -339,8 +302,7 @@
                         }, 0);
                     }
                 }
-                else if(touches.numTouches() == 2)
-                {
+                else if(touches.numTouches() == 2) {
                     // pinchend
                     if(touches.current.scale() !== 1.0) {
                         var pinchDirection = touches.current.scale() < 1.0 ? "narrowed" : "widened";
@@ -351,8 +313,7 @@
                 }
             };
 
-            var stopListening = function()
-            {
+            var stopListening = function() {
                 element.removeEventListener("touchstart", touchStart, opts.capture);
                 element.removeEventListener("touchmove", touchMove, opts.capture);
                 element.removeEventListener("touchend", touchEnd, opts.capture);
@@ -367,8 +328,7 @@
             };
         },
 
-        TouchGroup : function(event)
-        {
+        TouchGroup : function(event) {
             var that = this;
     
             var numTouches = event.touches.length;
@@ -380,46 +340,37 @@
             var prevScale = scale;
             var deltaScale = scale;
 
-            for(var i = 0; i < numTouches; i++)
-            {
+            for(var i = 0; i < numTouches; i++) {
                 this["touch" + i] = new Jester.Touch(event.touches[i].pageX, event.touches[i].pageY);
                 midpointX = event.touches[i].pageX;
                 midpointY = event.touches[i].pageY;
             }
 
-            function getNumTouches()
-            {
+            function getNumTouches() {
                 return numTouches;
             }
 
-            function getTouch(num)
-            {
+            function getTouch(num) {
                 return that["touch" + num];
             }
 
-            function getMidPointX()
-            {
+            function getMidPointX() {
                 return midpointX;
             }
-            function getMidPointY()
-            {
+            function getMidPointY() {
                 return midpointY;
             }
-            function getScale()
-            {
+            function getScale() {
                 return scale;
             }
-            function getPrevScale()
-            {
+            function getPrevScale() {
                 return prevScale;
             }
-            function getDeltaScale()
-            {
+            function getDeltaScale() {
                 return deltaScale;
             }
 
-            function updateTouches(event)
-            {
+            function updateTouches(event) {
                 var mpX = 0;
                 var mpY = 0;
     
@@ -447,14 +398,13 @@
                     midY: getMidPointY
                 },
                 delta: {
-                    scale: getDeltaScale,
+                    scale: getDeltaScale
                 },
-                update: updateTouches,
+                update: updateTouches
             };
         },
 
-        Touch : function(_startX, _startY)
-        {
+        Touch : function(_startX, _startY) {
             var that = this;
 
             var startX = _startX,
@@ -480,99 +430,77 @@
                     totalTime = 0;
 
             // position getters
-            function getStartX()
-            {
+            function getStartX() {
                 return startX;
             }
-            function getStartY()
-            {
+            function getStartY() {
                 return startY;
             }
-            function getCurrentX()
-            {
+            function getCurrentX() {
                 return currentX;
             }
-            function getCurrentY()
-            {
+            function getCurrentY() {
                 return currentY;
             }
-            function getPrevX()
-            {
+            function getPrevX() {
                 return prevX;
             }
-            function getPrevY()
-            {
+            function getPrevY() {
                 return prevY;
             }
-            function getDeltaX()
-            {
+            function getDeltaX() {
                 return deltaX;
             }
-            function getDeltaY()
-            {
+            function getDeltaY() {
                 return deltaY;
             }
-            function getTotalX()
-            {
+            function getTotalX() {
                 return totalX;
             }
-            function getTotalY()
-            {
+            function getTotalY() {
                 return totalY;
             }
 
             // time getters
-            function now()
-            {
+            function now() {
                 return (new Date()).getTime();
             }
-            function getStartTime()
-            {
+            function getStartTime() {
                 return startTime;
             }
-            function getCurrentTime()
-            {
+            function getCurrentTime() {
                 return currentTime;
             }
-            function getPrevTime()
-            {
+            function getPrevTime() {
                 return prevTime;
             }
-            function getDeltaTime()
-            {
+            function getDeltaTime() {
                 return deltaTime;
             }
-            function getTotalTime()
-            {
+            function getTotalTime() {
                 return totalTime;
             }
 
             // speed getters
-            function getCurrentSpeedX()
-            {
+            function getCurrentSpeedX() {
                 return currentSpeedX;
             }
-            function getCurrentSpeedY()
-            {
+            function getCurrentSpeedY() {
                 return currentSpeedY;
             }
-            function getPrevSpeedX()
-            {
+            function getPrevSpeedX() {
                 return prevSpeedX;
             }
-            function getPrevSpeedY()
-            {
+            function getPrevSpeedY() {
                 return prevSpeedY;
             }
-            function getDeltaSpeedX()
-            {
+            function getDeltaSpeedX() {
                 return deltaSpeedX;
             }
-            function getDeltaSpeedY()
-            {
+            function getDeltaSpeedY() {
                 return deltaSpeedY;
             }
-    
+
             return {
                 start: {
                     x: getStartX,
@@ -607,8 +535,7 @@
                     y: getTotalY,
                     time: getTotalTime
                 },
-                update: function(_x, _y)
-                {
+                update: function(_x, _y) {
                     prevX = currentX;
                     prevY = currentY;
                     currentX = _x;
@@ -634,8 +561,7 @@
         }
     };
 
-    container["jester"] = function(el, opts)
-    {
+    container["jester"] = function(el, opts) {
         return new Jester.Watcher(el, opts);
     };
 
