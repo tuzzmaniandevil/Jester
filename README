@@ -15,6 +15,7 @@ jester(element).tap(function() {
 For the latest news and most up-to-date information, check the Jester GitHub Wiki! http://wiki.github.com/plainview/Jester/
 
 0.0 - Intro
+0.1 - The Gestures
 1.0 - Project Status
 1.1 - Project Aims
 1.2 - Project Todos
@@ -30,6 +31,31 @@ For the latest news and most up-to-date information, check the Jester GitHub Wik
 0.0 Intro
 ---------
 A small JavaScript library for easily recognising gestures on DOM elements on the iPhone and iPad.
+
+
+0.1 The Gestures
+----------------
+Jester has the following gestures available for immediate use:
+
+jester(el).tap(handler);
+jester(el).doubletap(handler);
+jester(el).swipe(handler);
+jester(el).flick(handler);
+jester(el).pinch(handler);
+jester(el).pinchnarrow(handler);
+jester(el).pinchwiden(handler);
+jester(el).pinchend(handler);
+
+All gesture handlers get passed in the Jester touches object.  The touches object has all the good data in it, like how far a touch has moved, how long its been held down and so on.  Read more about that below.
+Some of the handlers are also passed in a direction as their second parameter.  This is a string that describes the direction the gesture travelled.  For examples of how this works, see the included index.html file's source.
+
+In addition, Jester also has three customisable methods which give you access to both the touches object and the raw event object:
+
+jester(el).start(handler);
+jester(el).during(handler);
+jester(el).end(handler);
+
+These handlers are called when the touch starts, when the touch moves and when the touch ends, respectively.  Again, see the index.html file accompanying this repo for their usage.
 
 
 1.0 Project Status
