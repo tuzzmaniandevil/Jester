@@ -62,7 +62,8 @@
                 }
             }
 
-            if(!elementCache["eventSet"]) {
+            // 
+            if(!("eventSet" in elementCache) || !(elementCache["eventSet"] instanceof Jester.EventSet)) {
                 elementCache["eventSet"] = new Jester.EventSet(element);
             }
 
@@ -83,12 +84,23 @@
             };
 
             // create shortcut bind methods for all gestures
-            gestures.split(" ").forEach(function(value) {
-                this[value] = function(fn) {
-                    this.bind(value, fn);
-                    return this;
+            gestures.split(" ").forEach(function(gesture) {
+                this[gesture] = function(fn) {
+                    return this.bind(gesture, fn);
                 };
             }, that);
+
+            this.start = function(fn) {
+                return this.bind("start", fn);
+            };
+
+            this.during = function(fn) {
+                return this.bind("during", fn);
+            };
+
+            this.end = function(fn) {
+                return this.bind("end", fn);
+            };
 
             // wrapper to cover all three pinch methods
             this.pinch = function(fns) {
@@ -235,7 +247,8 @@
             opts.deadY          = opts.deadY                ||    0;
 
             if(opts.capture !== false) opts.capture = true;
-            if(opts.preventDefault !== false) opts.preventDefault = true;
+            if(typeof opts.preventDefault !== "undefined" && opts.preventDefault !== false) opts.preventDefault = true;
+            if(typeof opts.preventDefault !== "undefined" && opts.stopPropagation !== false) opts.stopPropagation = true;
 
             var eventSet = elementCache.eventSet;
 
@@ -243,15 +256,21 @@
             var previousTapTime = 0;
 
             var touchStart = function(evt) {
-                if(opts.preventDefault) evt.preventDefault();
-
                 touches = new Jester.TouchGroup(evt);
+
+                eventSet.execute("start", touches, evt);
+
+                if(opts.preventDefault) evt.preventDefault();
+                if(opts.stopPropagation) evt.stopPropagation();
             };
 
             var touchMove = function(evt) {
-                if(opts.preventDefault) evt.preventDefault();
-
                 touches.update(evt);
+
+                eventSet.execute("during", touches, evt);
+
+                if(opts.preventDefault) evt.preventDefault();
+                if(opts.stopPropagation) evt.stopPropagation();
 
                 if(touches.numTouches() == 2) {
                     // pinchnarrow
@@ -267,7 +286,11 @@
             };
 
             var touchEnd = function(evt) {
+
+                eventSet.execute("end", touches, evt);
+
                 if(opts.preventDefault) evt.preventDefault();
+                if(opts.stopPropagation) evt.stopPropagation();
 
                 if(touches.numTouches() == 1) {
                     // tap

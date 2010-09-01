@@ -30,6 +30,7 @@
             document.addEventListener("DOMContentLoaded", function()
             {
                 var element = document.getElementById("wrapper");
+
                 var swipeHandler = function(touches, direction) {
                     var matrix = new WebKitCSSMatrix(this.style.webkitTransform);
                     if(direction === "right")
@@ -41,17 +42,38 @@
                         matrix.e = 0;
 
                     this.style.webkitTransform = "translate3d(" + matrix.e + "px, " + matrix.f + "px, 0)";
-                }
+                };
                 var changeColor = function(touches) {
                     this.style.backgroundColor = "#" + (Math.round(0xffffff * Math.random()).toString(16));
-                }
+                };
                 var alertDoubleTapped = function() {
                     alert("Double tap detected!");
-                }
-                jester(element, { swipeDistance: 10 })
+                };
+                var sizeCircle = function(touches) {
+                    this.style.webkitTransform = "scale(" + touches.current.scale() + ")";
+                };
+                var sizeRelease = function(touches) {
+                    this.style.webkitTransform = "scale(" + 1 + ")";
+                };
+                var startTouch = function(touches, event) {
+                    console.log(["touch started with id: ", event.touches[0].identifier].join(""))
+                };
+                var duringTouch = function(touches, event) {
+                    console.log(["touch continued with id: ", event.touches[0].identifier].join(""));
+                };
+                var endTouch = function(touches, event) {
+                    console.log(["touch ended with id: ", event.changedTouches[0].identifier].join(""));
+                };
+                jester(element, { swipeDistance: 10, preventDefault: true })
+                    .pinchnarrow(sizeCircle)
+                    .pinchwiden(sizeCircle)
+                    .pinchend(sizeRelease)
                     .swipe(swipeHandler)
                     .tap(changeColor)
-                    .doubletap(alertDoubleTapped);
+                    .doubletap(alertDoubleTapped)
+                    .start(startTouch)
+                    .during(duringTouch)
+                    .end(endTouch);
             }, false);
         </script>
 
