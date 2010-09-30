@@ -91,14 +91,22 @@ Jester makes recognising gestures on DOM elements really easy.  First you need t
 var el = document.getElementById("wrapper");
 </example>
 
-If you're using jQuery or another library which wraps elements in a custom object/interface, you need to get to the DOM element directly.  In jQuery:
+If you're using jQuery or another library which wraps elements in a custom object/interface, you need to get to the DOM element directly.
+
+In jQuery:
 
 <example>
 // will assign the element with an ID of "wrapper" to the variable el
-var el = $("#wrapper").get(0);
+var el = $("#wrapper")[0];
 </example>
 
-More examples with other libraries coming soon.
+
+In Dojo:
+
+<example>
+// will assign the element with an ID of "wrapper" to the variable el
+var el = dojo.query("#wrapper")[0];
+</example>
 
 OK, on with the Jester information....
 
@@ -227,3 +235,10 @@ Touch.total.
             x()         : the total x distance travelled
             y()         : the total y distance travelled
             time()      : the total time of this touch
+            
+3.0 Bugs, Questions, Credit
+---------------------------
+
+Got comments, questions or suggestions?  Get in touch via Github - http:/github.com/plainview/Jester
+
+Jester was started by me, Scott Seaward, with bugs succesfully spotted and swatted by Adam Silver.
