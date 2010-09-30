@@ -295,9 +295,7 @@
                 if(touches.numTouches() == 1) {
                     // tap
                     if(touches.touch(0).total.x() <= opts.tapDistance && touches.touch(0).total.y() <= opts.tapDistance && touches.touch(0).total.time() < opts.tapTime) {
-                        setTimeout(function() {
-                            eventSet.execute("tap", touches);
-                        }, 0);
+                        eventSet.execute("tap", touches);
                     }
     
                     // doubletap
@@ -312,26 +310,20 @@
                     // swipe
                     if(Math.abs(touches.touch(0).total.x()) >= opts.swipeDistance) {
                         var swipeDirection = touches.touch(0).total.x() < 0 ? "left" : "right";
-                        setTimeout(function() {
-                            eventSet.execute("swipe", touches, swipeDirection);
-                        }, 0);
+                        eventSet.execute("swipe", touches, swipeDirection);
                     }
 
                     // flick
                     if(Math.abs(touches.touch(0).total.x()) >= opts.flickDistance && touches.touch(0).total.time() <= opts.flickTime) {
                         var flickDirection = touches.touch(0).total.x() < 0 ? "left" : "right";
-                        setTimeout(function() {
-                            eventSet.execute("flick", touches, flickDirection);
-                        }, 0);
+                        eventSet.execute("flick", touches, flickDirection);
                     }
                 }
                 else if(touches.numTouches() == 2) {
                     // pinchend
                     if(touches.current.scale() !== 1.0) {
                         var pinchDirection = touches.current.scale() < 1.0 ? "narrowed" : "widened";
-                        setTimeout(function() {
-                            eventSet.execute("pinchend", touches, pinchDirection);
-                        }, 0);
+                        eventSet.execute("pinchend", touches, pinchDirection);
                     }
                 }
             };
