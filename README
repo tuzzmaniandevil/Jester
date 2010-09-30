@@ -25,7 +25,6 @@ For the latest news and most up-to-date information, check the Jester GitHub Wik
 2.3 - Options
 2.4 - TouchGroup Object
 2.5 - Touch Object
-3.0 - Bugs? Questions?
 
 
 0.0 Intro
@@ -228,7 +227,3 @@ Touch.total.
             x()         : the total x distance travelled
             y()         : the total y distance travelled
             time()      : the total time of this touch
-
-3.0 Bugs? Questions?
---------------------
-Jester is currently the work of me, Scott Seaward.  My username on GitHub is plainview.  Get in touch through GitHub if you have anything to say about Jester.
