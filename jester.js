@@ -226,7 +226,7 @@
                     // iterate throuh all the handlers
                     for(var i = 0; i < eventsTable[eventName].length; i++) {
                         // check current handler is a function
-                        if(eventsTable[eventName][i].constructor == Function) {
+                        if(typeof eventsTable[eventName][i] === "function") {
                             // execute handler with the provided arguments
                             eventsTable[eventName][i].apply(element, args);
                         }
